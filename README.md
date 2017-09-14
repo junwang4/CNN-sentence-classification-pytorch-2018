@@ -9,14 +9,19 @@ There are several versions available on Github written in tensorflow, keras, and
 
 I only focus on the Cornell Movie Review data since it is the data provided in Kim's repo.
 
+TODO: add dev sets to find the best model for prediction.
+(Currently I only use 10 epochs, and use the acc of the last epoch as the result of one CV.)
 
 Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Random (shuffling pretrained embeddings)
 --- | --- | --- | ---
-nonstatic   | 80.3 | 75.1 | 76.3
+nonstatic   | 80.0 | 75.1 | 76.3
 static   | 80.1 | |
 
 
-```python
+
+```
+PYTHON 2.7
+
 use_cuda = True
 
 MODE      = static
