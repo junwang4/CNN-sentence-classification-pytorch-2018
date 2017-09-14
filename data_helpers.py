@@ -85,6 +85,7 @@ def build_input_data(sentences, labels, vocabulary):
     """
     x = np.array([[vocabulary[word] for word in sentence] for sentence in sentences])
     y = np.array(labels)
+    y = y.argmax(axis=1)
     return [x, y]
 
 
