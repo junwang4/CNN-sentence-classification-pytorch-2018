@@ -9,8 +9,11 @@ There are several versions available on Github written in tensorflow, keras, and
 
 I only focus on the Cornell Movie Review data since it is the data provided in Kim's repo.
 
-TODO: add dev sets to find the best model for prediction.
-(Currently I only use 10 epochs, and use the acc of the last epoch as the result of one CV.)
+To create a customized pretrained word embeddings from GoogleNews-vectors-negative300.bin, modify the code `utils.py`. You just need to change the following line:
+```
+pretrained_embedding_fpath = os.path.expanduser("~/.keras/models/GoogleNews-vectors-negative300.bin")
+```
+
 
 Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Random (shuffling pretrained embeddings)
 --- | --- | --- | ---
@@ -18,9 +21,8 @@ nonstatic   | 80.0 | 75.1 | 76.3
 static   | 80.1 | |
 
 
-
 ```
-PYTHON 2.7
+PYTHON 2.7 and 3.5
 
 use_cuda = True
 
