@@ -1,4 +1,6 @@
-import os, time, sys
+import os
+import sys
+import time
 import numpy as np
 import pickle
 import gensim
@@ -15,10 +17,10 @@ def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpa
     fpath_pretrained_extracted = os.path.expanduser("{}/googlenews_extracted-python{}.pl".format(directory, sys.version_info.major))
     fpath_word_list = os.path.expanduser("{}/words.dat".format(directory))
 
-    s = time.time()
+    tic = time.time()
     model = gensim.models.KeyedVectors.load_word2vec_format(pretrained_embedding_fpath, binary=True)
     print('Please wait ... (it could take a while to load the file : {})'.format(pretrained_embedding_fpath))
-    print('Done.  (time used: {:.1f}s)\n'.format(time.time()-s))
+    print('Done.  (time used: {:.1f}s)\n'.format(time.time()-tic))
 
     embedding_weights = {}
 
@@ -37,8 +39,15 @@ def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpa
         f.write("\n".join(words))
 
 def main():
-    pretrained_embedding_fpath = os.path.expanduser("~/.keras/models/GoogleNews-vectors-negative300.bin")
-    customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpath)
+    if len(sys.argv) == 1:
+        path_to_googlenews_vectors = os.path.expanduser("~/.keras/models/GoogleNews-vectors-negative300.bin")
+    else:
+        path_to_googlenews_vectors = sys.argv[1]
+        if not os.path.exists(path_to_googlenews_vectors):
+            print('Sorry, file "{}" does not exist'.format(path_to_googlenews_vectors))
+            sys.exit()
+    print('Your path to the googlenews vector file is: ', path_to_googlenews_vectors)
+    #customize_embeddings_from_pretrained_googlenews_w2v(path_to_googlenews_vectors)
 
 if __name__ == "__main__":
     main()
