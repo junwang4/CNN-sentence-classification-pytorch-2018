@@ -1,5 +1,5 @@
 import numpy as np
-import re
+import re, sys
 import itertools
 from collections import Counter
 
@@ -28,27 +28,27 @@ def clean_str(string):
     string = re.sub(r"\s{2,}", " ", string)
     return string.strip().lower()
 
-
 def load_data_and_labels():
-    """
-    Loads MR polarity data from files, splits the data into words and generates labels.
-    Returns split sentences and labels.
-    """
-    # Load data from files
-    positive_examples = list(open("./data/rt-polarity.pos").readlines())
-    positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/rt-polarity.neg").readlines())
-    negative_examples = [s.strip() for s in negative_examples]
-    # Split by words
-    x_text = positive_examples + negative_examples
-    x_text = [clean_str(sent) for sent in x_text]
+    x_text, y = load_sentences_and_labels()
     x_text = [s.split(" ") for s in x_text]
-    # Generate labels
-    positive_labels = [[0, 1] for _ in positive_examples]
-    negative_labels = [[1, 0] for _ in negative_examples]
-    y = np.concatenate([positive_labels, negative_labels], 0)
+    y = [[0, 1] if label==1 else [1, 0] for label in y]
     return [x_text, y]
 
+def load_sentences_and_labels():
+    if sys.version_info.major == 3:
+        positive_examples = list(open("./data/rt-polarity.pos", encoding ='ISO-8859-1').readlines())
+        negative_examples = list(open("./data/rt-polarity.neg", encoding ='ISO-8859-1').readlines())
+    else:
+        positive_examples = list(open("./data/rt-polarity.pos").readlines())
+        negative_examples = list(open("./data/rt-polarity.neg").readlines())
+    positive_examples = [s.strip() for s in positive_examples]
+    negative_examples = [s.strip() for s in negative_examples]
+    x_text = positive_examples + negative_examples
+    x_text = [clean_str(sent) for sent in x_text]
+    positive_labels = [1 for _ in positive_examples]
+    negative_labels = [0 for _ in negative_examples]
+    y = positive_labels + negative_labels
+    return x_text, y
 
 def pad_sentences(sentences, padding_word="<PAD/>"):
     """
