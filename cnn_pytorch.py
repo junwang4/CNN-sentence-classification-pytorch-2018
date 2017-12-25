@@ -143,8 +143,11 @@ def train_test_one_split(cv, train_index, test_index):
     dataset_train = TensorDataset(x_train, y_train)
     train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
-    x_test = torch.from_numpy(x_test).long().cuda()
-    y_test = torch.from_numpy(y_test).long().cuda()
+    x_test = torch.from_numpy(x_test).long()
+    y_test = torch.from_numpy(y_test).long()
+    if use_cuda:
+        x_test = x_test.cuda()
+        y_test = y_test.cuda()
 
     model = CNN(kernel_sizes, num_filters, embedding_dim, pretrained_embeddings)
     if cv==0:
@@ -167,7 +170,8 @@ def train_test_one_split(cv, train_index, test_index):
                 inputs, labels = inputs.cuda(), labels.cuda()
 
             preds, _ = model(inputs)
-            preds = preds.cuda()
+            if use_cuda:
+                preds = preds.cuda()
             loss = loss_fn(preds, labels)
 
             optimizer.zero_grad()
