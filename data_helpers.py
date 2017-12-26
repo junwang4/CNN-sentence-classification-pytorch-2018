@@ -1,10 +1,11 @@
-import numpy as np
-import re, sys
+import re
+import sys
 import itertools
+import numpy as np
 from collections import Counter
 
 """
-Original taken from https://github.com/dennybritz/cnn-text-classification-tf
+Adapted from https://github.com/dennybritz/cnn-text-classification-tf
 """
 
 
@@ -100,20 +101,3 @@ def load_data():
     vocabulary, vocabulary_inv = build_vocab(sentences_padded)
     x, y = build_input_data(sentences_padded, labels, vocabulary)
     return [x, y, vocabulary, vocabulary_inv]
-
-
-def batch_iter(data, batch_size, num_epochs):
-    """
-    Generates a batch iterator for a dataset.
-    """
-    data = np.array(data)
-    data_size = len(data)
-    num_batches_per_epoch = int(len(data) / batch_size) + 1
-    for epoch in range(num_epochs):
-        # Shuffle the data at each epoch
-        shuffle_indices = np.random.permutation(np.arange(data_size))
-        shuffled_data = data[shuffle_indices]
-        for batch_num in range(num_batches_per_epoch):
-            start_index = batch_num * batch_size
-            end_index = min((batch_num + 1) * batch_size, data_size)
-            yield shuffled_data[start_index:end_index]
