@@ -53,10 +53,10 @@ avg acc = 0.801  (total time: 90.5s)
 
 ### A Glance of the Performance
 Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Bag-of-words/tfidf + SVM
---- | --- | --- | ---
-nonstatic   | 80.0 | 75.0 |
-static      | 80.1 |      |
-            |      |      | 79.1
+|--- | --- | --- | --- |
+|nonstatic   | 80.0 | 75.0 |  |
+|static      | 80.1 |      |  |
+|    |     |    | 79.1 |
 
 
 ## Background
