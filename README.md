@@ -11,7 +11,7 @@ STEP 2
 python cnn_pytorch.py
 ```
 
-Output of running the above command (your numbers could be different)
+Here is the output of running the above command (your numbers are likely to be different)
 ```
 MODE      = static
 EMBEDDING = pretrained
@@ -55,7 +55,7 @@ avg acc = 0.801  (total time: 90.5s)
 Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Bag-of-words/tfidf + SVM
 |--- | --- | --- | --- |
 |nonstatic   | 80.0 | 75.0 |  |
-|static      | 80.1 |      |  |
+|static      | 80.1 | 48.7 (around 50.0) |  |
 |    |     |    | 79.1 |
 
 
