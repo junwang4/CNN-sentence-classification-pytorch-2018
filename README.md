@@ -52,10 +52,11 @@ avg acc = 0.801  (total time: 90.5s)
 ```
 
 ### A Glance of the Performance
-Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Random (shuffling pretrained embeddings)
+Train mode | Pretrained embeddings  |  Random (-0.01, 0.01)   | Bag-of-words/tfidf + SVM
 --- | --- | --- | ---
-nonstatic   | 80.0 | 75.1 | 76.3
-static   | 80.1 | |
+nonstatic   | 80.0 | 75.0 |
+static      | 80.1 |      |
+            |      |      | 79.1
 
 
 ## Background
@@ -69,4 +70,4 @@ There are several versions available on Github written in tensorflow, keras, and
 I only focus on the Cornell Movie Review data since it is the data provided in Kim's repo.
 
 ## More
-In the file `cnn_pytorch.py`, I also provide a short script for running SVM classification using the bag-of-words framework.
+To compare CNN with the traditional bag of words model, I also provide a python script `bag_of_words.py`.

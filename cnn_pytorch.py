@@ -66,13 +66,24 @@ class CNN(nn.Module):
             else:
                 conv1d = nn.Conv1d(in_channels = 1, out_channels = num_filters, kernel_size = kernel_size*embedding_dim, stride = embedding_dim)
 
-            conv_blocks.append(
+            component = nn.Sequential(
+                conv1d,
+                nn.ReLU(),
+                nn.MaxPool1d(kernel_size = maxpool_kernel_size)
+            )
+            if use_cuda:
+                component = component.cuda()
+
+            conv_blocks.append(component)
+
+            if 0:
+                conv_blocks.append(
                 nn.Sequential(
                     conv1d,
                     nn.ReLU(),
                     nn.MaxPool1d(kernel_size = maxpool_kernel_size)
                 ).cuda()
-            )
+                )
 
         self.conv_blocks = nn.ModuleList(conv_blocks)   # ModuleList is needed for registering parameters in conv_blocks
         self.fc = nn.Linear(num_filters*len(kernel_sizes), num_classes)
@@ -100,7 +111,9 @@ class CNN(nn.Module):
 def evaluate(model, x_test, y_test):
     inputs = Variable(x_test)
     preds, vector = model(inputs)
-    preds = torch.max(preds, 1)[1].cuda()
+    preds = torch.max(preds, 1)[1]
+    if use_cuda:
+        preds = preds.cuda()
     eval_acc = sum(preds.data == y_test) / len(y_test)
     return eval_acc, vector.cpu().data.numpy()
 
@@ -141,7 +154,8 @@ def train_test_one_split(cv, train_index, test_index):
     x_train = torch.from_numpy(x_train).long()
     y_train = torch.from_numpy(y_train).long()
     dataset_train = TensorDataset(x_train, y_train)
-    train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    #train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=False)
 
     x_test = torch.from_numpy(x_test).long()
     y_test = torch.from_numpy(y_test).long()
@@ -204,42 +218,13 @@ def do_cnn():
     print('\navg acc = {:.3f}   (total time: {:.1f}s)\n'.format(sum(acc_list)/len(acc_list), time.time()-tic))
 
     # save extracted sentence vectors in case that we can reuse it for other purpose (e.g. used as input to an SVM classifier)
+    # each vector can be used as a fixed-length dense vector representation of a sentence
     np.save('models/sentence_vectors.npy', np.array(sentence_vectors))
     np.save('models/sentence_vectors_y.npy', np.array(y_tests))
 
 
-from sklearn.svm import LinearSVC
-from sklearn.model_selection import cross_val_score, KFold, train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
-def CV_evaluate(X, y, C=1):
-    clf = LinearSVC(C = C)
-    K = 10
-    use_cv = True
-    if use_cv:
-        cv = KFold(K, shuffle=True, random_state=0)
-        scores = cross_val_score(clf, X, y, cv=cv, n_jobs=5)
-        print(scores)
-        print("Accuracy: {:.3f}".format(np.mean(scores)))
-
-def do_svm_test_with_extracted_sentence_vectors():
-    data = np.load('models/sentence_vectors.npy')
-    labels = np.load('models/sentence_vectors_y.npy')
-    CV_evaluate(data, labels, C=0.01)
-
-def do_bow(): # bag-of-words
-    vectorizer = CountVectorizer
-    vectorizer = TfidfVectorizer
-    vec = vectorizer(ngram_range=(1, 2), min_df=2, token_pattern='[^ ]+')
-    X_text, y = data_helpers.load_sentences_and_labels()
-    X_sparse = vec.fit_transform(X_text).astype(float)
-    CV_evaluate(X_sparse, y, C=.5)
-
-
 def main():
-    #do_bow()
     do_cnn()
-    #do_svm_test_with_extracted_sentence_vectors()
 
 if __name__ == "__main__":
     main()
