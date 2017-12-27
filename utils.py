@@ -47,7 +47,7 @@ def main():
             print('Sorry, file "{}" does not exist'.format(path_to_googlenews_vectors))
             sys.exit()
     print('Your path to the googlenews vector file is: ', path_to_googlenews_vectors)
-    #customize_embeddings_from_pretrained_googlenews_w2v(path_to_googlenews_vectors)
+    customize_embeddings_from_pretrained_googlenews_w2v(path_to_googlenews_vectors)
 
 if __name__ == "__main__":
     main()
