@@ -114,7 +114,8 @@ def evaluate(model, x_test, y_test):
     preds = torch.max(preds, 1)[1]
     if use_cuda:
         preds = preds.cuda()
-    eval_acc = sum(preds.data == y_test) / len(y_test)
+    #eval_acc = sum(preds.data == y_test) / len(y_test)          # pytorch 0.3
+    eval_acc = (preds.data == y_test).sum().item() / len(y_test) # pytorch 0.4
     return eval_acc, vector.cpu().data.numpy()
 
 
@@ -199,7 +200,8 @@ def train_test_one_split(cv, train_index, test_index):
 
         model.eval()
         eval_acc, sentence_vector = evaluate(model, x_test, y_test)
-        print('[epoch: {:d}] train_loss: {:.3f}   acc: {:.3f}   ({:.1f}s)'.format(epoch, loss.data[0], eval_acc, time.time()-tic) )
+        #print('[epoch: {:d}] train_loss: {:.3f}   acc: {:.3f}   ({:.1f}s)'.format(epoch, loss.data[0], eval_acc, time.time()-tic) )
+        print('[epoch: {:d}] train_loss: {:.3f}   acc: {:.3f}   ({:.1f}s)'.format(epoch, loss.item(), eval_acc, time.time()-tic) )  # pytorch 0.4 and later
     return eval_acc, sentence_vector
 
 
