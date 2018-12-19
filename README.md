@@ -11,7 +11,7 @@ STEP 2
 python cnn_pytorch.py
 ```
 
-Here is the output of running the above command (your numbers are likely to be different). BTW, I observed that PyTorch 0.4 can reduce running time to 66 seconds.
+Here is the output of running the above command (your numbers are likely to be different). BTW, I observed that PyTorch 1.0 can further reduce the running time.
 ```
 MODE      = static
 EMBEDDING = pretrained
